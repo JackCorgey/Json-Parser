@@ -45,14 +45,15 @@ public class Jxn {
 				String label = getLabel(i);
 				String val = null;
 
-				// jump to the next non-whitespace character
-				// if a curl bracket, recursively call findSections
-				// else it's a value
 				i = getNext(i);
 				if( json[i].equals("{") ) { // we found an object; dive
 					sub = new JxnObject(null, JxnObject.Type.Object);
 					findSections(i, i = getSectionEnd(i), sub); // push i to end of section
 					//System.out.println(i);
+				} else if( json[i].equals("[") ) { // we found an array
+					ArrayList<JxnObject> array = getArray( ++i , i = getSectionEnd(i) );
+					sub = new JxnObject(array);
+					// find array;
 				} else {
 					sub = processValue(i);
 				}
@@ -63,9 +64,22 @@ public class Jxn {
 		}	
 	}
 	
-	public void getArray() {
-		// need to implement array
+	public ArrayList<JxnObject> getArray(int start, int end) {
+		String strArray = toString( Arrays.copyOfRange(json, start, end) );
+		ArrayList<JxnObject> objs = new ArrayList<JxnObject>();
+		
+		String[] secs = strArray.split(",");
+		for(int i = 0; i < secs.length; ++i) {
+			String[] _secs = secs[i].split("");
+			JxnObject sub = new JxnObject(null, JxnObject.Type.Object);
+			findSections(start, start = (start+_secs.length), sub);
+			objs.add(sub);
+		}
+		
+		return objs; 
 	}
+	
+	
 	
 	// assumption will call when index is a bracket
 	public int getSectionEnd(int i) { // doesn't take in account of escapes
@@ -108,6 +122,8 @@ public class Jxn {
 			
 		return toString( Arrays.copyOfRange(json, ++i, end) );
 	}
+	
+	
 	
 	private JxnObject processValue(int i) {
 		boolean isNum = false;

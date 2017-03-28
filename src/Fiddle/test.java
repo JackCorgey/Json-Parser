@@ -9,30 +9,40 @@ import wip.JxnObject;
 public class test {
 
 	public static void main(String[] args) {
-		String json = 
-				"'zero': 0, one: {'letter': 'a', 'number': { '2':'foo', '3': 'tree'}, 'g':'4' }, 'two': 43 }"
-				.replace("\'", "\"");
+//		String json = 
+//				"'zero': 0, one: {'letter': 'a', 'number': { '2':'foo', '3': 'tree'}, 'g':'4' }, 'two': 43 }"
+//				.replace("\'", "\"");
+//		
+//		Jxn jxn = new Jxn(json, true);
+//
+//		jxn.parse();
 		
-		Jxn jxn = new Jxn(json, true);
-
-		jxn.parse();
-		
-		JxnObject r = jxn.root;
-		System.out.println( r.type() );
-		String i = r.get("one").get("letter").value();
-		int num = r.get("zero").value();
-		System.out.println( i + " " + r.get("one").get("g").value() );
-		
+//		JxnObject r = jxn.root;
+//		System.out.println( r.type() );
+//		String i = r.get("one").get("letter").value();
+//		int num = r.get("zero").value();
+//		System.out.println( i + " " + r.get("one").get("g").value() );
+//		
 		
 		Jxn json1 = new Jxn("src//test.json");
 		json1.parse();
 		JxnObject root = json1.root;
 		
-		String url = root.get("widget").get("text").get("nested").get("egg").get("bird").value();
-		String url1 = root.get("widget=>image=>src", true).value();
+		//String url = root.get("widget").get("text").get("nested").get("egg").get("bird").value();
+		String url = root.get("widget=>image=>src", true).value();
 		
-		System.out.println(url + " " + url1);
-				
+		System.out.println(url);
+		
+		//System.out.println( "homie".substring(1, 0) );
+	
+		String json2 = "{'array' : ['nest':{'bird':'egg' },'letter':'a'] }".replace("'", "\"");
+		Jxn jx2 = new Jxn(json2, true);
+		jx2.parse();
+		String test2 = jx2.root.get("array").get(1).get("letter").value();
+		System.out.println(test2);
+		
+		
+			
 		
 //		JxnObject root = new JxnObject(null, JxnObject.Type.Object);
 //		JxnObject person = new JxnObject(null, JxnObject.Type.Object);

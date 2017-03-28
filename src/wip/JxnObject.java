@@ -1,4 +1,6 @@
 package wip;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -9,14 +11,24 @@ public class JxnObject {
 	}
 	
 	private String val;
-	Type type;
+	private Type type;
 	private HashMap<String, JxnObject> dict = null;
+	private ArrayList<JxnObject> array = null;
 	
 	public JxnObject(String _val, Type _type) {
 		val = _val;
-		if(Type.Object == (type = _type) ) {
+		type = _type;
+		if(type == Type.Object ) {
 			dict = new HashMap<String,JxnObject>();
+		} else if (type == Type.Array) {
+			array = new ArrayList<JxnObject>();
 		}
+	}
+	
+	public JxnObject(ArrayList<JxnObject> _array) {
+		val = null;
+		type = Type.Array;
+		array = _array;
 	}
 	
 	/* 
@@ -43,6 +55,13 @@ public class JxnObject {
 			}
 		}
 		return null;
+	}
+	
+	public JxnObject get(int i) {
+		if( type != Type.Array || i >= array.size() )
+			return null;
+
+		return array.get(i);		
 	}
 	
 	public JxnObject get(String keys, boolean deepFetch) {
