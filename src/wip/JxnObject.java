@@ -31,6 +31,21 @@ public class JxnObject {
 		array = _array;
 	}
 	
+	public JxnObject(JxnObject obj) {
+		val = obj.val();
+		type = obj.type();
+		array = new ArrayList<JxnObject>( obj.array() );
+		dict = new HashMap<String, JxnObject>( obj.getDict() );
+	}
+	
+	public String val() {
+		return val;
+	}
+	
+	public ArrayList<JxnObject> array() {
+		return array;
+	}
+	
 	/* 
 	 * adds a jxDict object to HashMap dict
 	 */

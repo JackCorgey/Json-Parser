@@ -25,8 +25,7 @@ public class test {
 //		
 		
 		Jxn json1 = new Jxn("src//test.json");
-		json1.parse();
-		JxnObject root = json1.root;
+		JxnObject root  = json1.parse();
 		
 		//String url = root.get("widget").get("text").get("nested").get("egg").get("bird").value();
 		String url = root.get("widget=>image=>src", true).value();
@@ -35,10 +34,17 @@ public class test {
 		
 		//System.out.println( "homie".substring(1, 0) );
 	
-		String json2 = "{'array' : ['nest':{'bird':'egg' },'letter':'a'] }".replace("'", "\"");
+		String json2 = "{'array' : ['nest':{'bird':'egg', 'house' : ['cool': {'b': 'c'}, 'd':'e'] },'a'] }".replace("'", "\"");
 		Jxn jx2 = new Jxn(json2, true);
-		jx2.parse();
-		String test2 = jx2.root.get("array").get(1).get("letter").value();
+		root = jx2.parse();
+		String test2 = root.get("array")
+				.get(0)
+				.get("nest")
+				.get("house")
+				.get(1)
+				.get("d")
+				.value();
+		
 		System.out.println(test2);
 		
 		

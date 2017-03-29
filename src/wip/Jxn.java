@@ -11,17 +11,17 @@ import java.util.HashMap;
 public class Jxn {
 	
 	private String[] json;
-	public JxnObject root;
+	//public JxnObject root;
 	
 	// this is for testing purposes only
 	public Jxn(String _json, boolean yes) {	
-		root = new JxnObject(null, JxnObject.Type.Object);
+		//root = new JxnObject(null, JxnObject.Type.Object);
 		json = new String[_json.length()];
 		json = _json.split("");
 	}
 	
 	public Jxn(String jsonPath) {
-		root = new JxnObject(null, JxnObject.Type.Object);
+		//root = new JxnObject(null, JxnObject.Type.Object);
 		json = load(jsonPath).split("");
 	}
 	
@@ -33,8 +33,10 @@ public class Jxn {
 		}
 	}
 	
-	public void parse() {
+	public JxnObject parse() {
+		JxnObject root = new JxnObject(null, JxnObject.Type.Object);
 		findSections(0, json.length, root);
+		return root;
 	}
 	
 	public void findSections(int start, int end, JxnObject obj) {
@@ -70,16 +72,26 @@ public class Jxn {
 		
 		String[] secs = strArray.split(",");
 		for(int i = 0; i < secs.length; ++i) {
-			String[] _secs = secs[i].split("");
-			JxnObject sub = new JxnObject(null, JxnObject.Type.Object);
-			findSections(start, start = (start+_secs.length), sub);
-			objs.add(sub);
+			if( secs[i].contains(":") ) {
+				String[] _secs = secs[i].split("");
+				JxnObject sub = new JxnObject(null, JxnObject.Type.Object);
+				findSections(start, start = (start + _secs.length), sub);
+				objs.add(sub);
+			} else {
+				objs.add( new JxnObject( processValue(secs[i]), JxnObject.Type.Object) );
+			}
 		}
 		
 		return objs; 
 	}
 	
-	
+	public String toString(char[] arg) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < arg.length; ++i) {
+			sb.append(arg[i]);
+		}
+		return sb.toString();
+	}
 	
 	// assumption will call when index is a bracket
 	public int getSectionEnd(int i) { // doesn't take in account of escapes
@@ -123,7 +135,23 @@ public class Jxn {
 		return toString( Arrays.copyOfRange(json, ++i, end) );
 	}
 	
-	
+	public String processValue(String val) {
+		char[] vals = val.toCharArray();
+		
+		Integer start = null;
+		int i = 0;
+		for( ; i < vals.length; ++i) {
+			if(vals[i] == '"') {
+				if(start == null) {
+					start = i+1;
+				} else {
+					break;
+				}
+			}
+		}
+		
+		return toString( Arrays.copyOfRange(vals, start, i) );
+	}
 	
 	private JxnObject processValue(int i) {
 		boolean isNum = false;
